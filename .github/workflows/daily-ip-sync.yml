@@ -1,0 +1,61 @@
+name: daily-ip-sync
+
+on:
+  schedule:
+    # 每天执行一次：北京时间早上 3 点（cron 用 UTC：03:00 - 8h = 前一天 19:00）
+    # 如果想让它在 UTC 早上 3 点跑，把下面这行换成 '0 3 * * *'
+    # GitHub 定时可能有几分钟的延迟, 属正常现象
+    - cron: '0 19 * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: '只预览不推送 (dry-run)'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-ip-sync    # 同一时间只跑一个, 防止上次没跑完就又启动
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      # 让脚本按北京时间判断“自然月”和打印时间（否则 runner 默认是 UTC）
+      TZ: Asia/Shanghai
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+
+      - name: Run sync (cf-byoip-sync.js)
+        env:
+          TOKEN_1: ${{ secrets.TOKEN_1 }}
+          TOKEN_4: ${{ secrets.TOKEN_4 }}
+          TOKEN_2: ${{ secrets.TOKEN_2 }}
+          TOKEN_5: ${{ secrets.TOKEN_5 }}
+          TOKEN_3: ${{ secrets.TOKEN_3 }}
+          TOKEN_6: ${{ secrets.TOKEN_6 }}
+        run: |
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            node cf-byoip-sync.js --dry-run
+          else
+            node cf-byoip-sync.js
+          fi
+
+      - name: Commit results
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet && echo "nothing changed, skip commit" && exit 0
+          git commit --amend -m "chore: state snapshot ($(date -u '+%Y-%m-%d %H:%M'))"
+          git push --force-with-lease
