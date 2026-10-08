@@ -3,7 +3,7 @@
  * cf-byoip-sync.js — 合并版：下载源清单 + 本地锁月处理 + 平均分配到 4 个域名 + 有变化才推送
  *
  * 配置方式（.env，只放令牌；域名已写在脚本里面，不用配置）:
- *   在脚本同目录创建 .env（三网各一组；A=小号令牌，B=大号令牌）:
+ *   在脚本同目录创建 .env（四组：移动/联通/电信/海外，各含 A/B）:
  *     # 移动（YD）
  *     YD_A=移动A的令牌
  *     YD_B=移动B的令牌
@@ -13,18 +13,21 @@
  *     # 电信（DX）
  *     DX_A=电信A的令牌
  *     DX_B=电信B的令牌
+ *     # 海外（HW）
+ *     HW_A=海外A的令牌
+ *     HW_B=海外B的令牌
  *   系统环境变量同样可用（GitHub Actions Secrets 就是走这个），且优先于 .env。
- *   （Secrets 名只允许字母/数字/下划线，所以用 YD/LT/DX 这套名字。）
+ *   （Secrets 名只允许字母/数字/下划线，所以用 YD/LT/DX/HW 这套名字。）
  *
  * 流程:
  *   0) 下载: 默认先从 SOURCE_URL 拉取最新 ipv4.txt（--no-download 跳过；
  *            下载失败且有本地文件时会用本地继续）
  *   1) 处理: 月内锁定第4段, 只跟随 /24 增删; 自然月切换时全量刷新(换最后一位)
- *   2) 分配: 全部 IP 平均分到 4 个域名（A1/A2/B1/B2），并把分配记进 state 文件。
+ *   2) 分配: 全部 IP 平均分到每个网络的 4 个域名（A1/A2/B1/B2），并把分配记进 state 文件。
  *            - 月内: 移出的从原域名扣掉; 新增的给"当前最少"的域名（并列按 A1→A2→B1→B2）;
  *              已分好的不动 —— 只有发生变化的域名会被推送
  *            - 每月(全量刷新): 重新均衡分配, 整表推送
- *   3) 推送: 只改默认规则地址池; 分配与上次推送一致时不推
+ *   3) 推送: 只改默认规则地址池; 分配没变且目标没变时不推
  *
  * 用法:
  *   node cf-byoip-sync.js                 # 默认：下载最新清单 -> 处理 -> 有变化就真正推送
@@ -33,8 +36,8 @@
  *   node cf-byoip-sync.js --force-push    # 忽略“无变化”，强制推一次
  *   node cf-byoip-sync.js --no-push       # 只做本地处理，不推送
  *   node cf-byoip-sync.js --refresh       # 强制全量刷新（手动换一次最后一位）
- *   node cf-byoip-sync.js --slot=YD_A     # 只推某个令牌（测试用；不记录推送状态）
- *   node cf-byoip-sync.js --discover=DX_B # 查域名/规则（填配置用）
+ *   node cf-byoip-sync.js --slot=HW_A     # 只推某个令牌（测试用；不记录推送状态）
+ *   node cf-byoip-sync.js --discover=HW_A # 查域名/规则（填配置用）
  *   node cf-byoip-sync.js --tokens        # 打印各令牌的长度+指纹（排查认证问题用）
  *
  * 依赖: Node 18+
@@ -62,7 +65,7 @@ const CONFIG = {
 	STATE_FILE: 'state-ipv4.json', // 锁定状态 + 域名分配（不要删）
 	OUTPUT_FILE: 'deployed-ipv4.txt', // 处理后的部署清单
 	LOG_FILE: 'process.log',
-	ENV_FILE: '.env', // 只放令牌：YD_A / YD_B / LT_A / LT_B / DX_A / DX_B
+	ENV_FILE: '.env', // 只放令牌：YD_A/YD_B、LT_A/LT_B、DX_A/DX_B、HW_A/HW_B
 
 	// 锁月规则
 	MONTH_MODE: 'calendar', // 'calendar'=自然月(默认) | 'rolling30'=满30天
@@ -77,10 +80,10 @@ const CONFIG = {
 	TIMEOUT_MS: 20000,
 };
 
-// ======================= 三网配置：令牌名 + 域名 =======================
+// ======================= 网络配置：令牌名 + 域名 =======================
 // 每组一个网络：A=小号令牌（域名拿 A1/A2），B=大号令牌（域名拿 B1/B2）。
-// tokenKey 就是 .env / 环境变量里的名字：YD=移动、LT=联通、DX=电信。
-// 想换名字（比如 MOBILE_A）就改这里 6 个 tokenKey，并同步改 .env 的键名，两处一致即可。
+// tokenKey 就是 .env / 环境变量里的名字：YD=移动、LT=联通、DX=电信、HW=海外。
+// 想换名字（比如 MOBILE_A）就改这里的 tokenKey，并同步改 .env 的键名，两处一致即可。
 const NETWORKS = [
 	{
 		network: '移动',
@@ -113,6 +116,17 @@ const NETWORKS = [
 		B: {
 			tokenKey: 'DX_B',
 			domains: ['b15488b3.alidns-3.com', 'cedf0ead.alidns-3.com'],
+		},
+	},
+	{
+		network: '海外',
+		A: {
+			tokenKey: 'HW_A',
+			domains: ['b684ed1b.alidns-3.com', 'c4523ce7.alidns-3.com'],
+		},
+		B: {
+			tokenKey: 'HW_B',
+			domains: ['0dac963e.alidns-2.com', '82b5b9b6.alidns-2.com'],
 		},
 	},
 ];
@@ -790,7 +804,7 @@ async function main() {
 
 	if (!fs.existsSync(path.join(DIR, CONFIG.ENV_FILE)))
 		log(
-			`[配置] 未找到 ${CONFIG.ENV_FILE}（在脚本同目录创建即可，只需填 YD_A/YD_B、LT_A/LT_B、DX_A/DX_B；线上可用环境变量）`,
+			`[配置] 未找到 ${CONFIG.ENV_FILE}（在脚本同目录创建即可，需填 YD_A/YD_B、LT_A/LT_B、DX_A/DX_B、HW_A/HW_B；线上可用环境变量）`,
 		);
 	const missingKeys = SLOTS.filter((s) => tokenPh(s.token)).map(
 		(s) => s.tokenKey,
@@ -799,7 +813,7 @@ async function main() {
 		log(
 			`[配置] 以下令牌未配置: ${missingKeys.join(', ')}（在 ${CONFIG.ENV_FILE} 或环境变量里设置）`,
 		);
-	else log('[配置] 6 个令牌均已读取');
+	else log(`[配置] 全部 ${SLOTS.length} 个令牌均已读取`);
 
 	if (SHOW_TOKENS) {
 		log(
@@ -957,26 +971,33 @@ async function main() {
 		distInfo.added.forEach((x) => appendLog('    d+ ' + x));
 	}
 
-	// ---------- 4) 推送判断（对比上次推送的“分配”） ----------
+	// ---------- 4) 推送判断（对比上次推送的“分配”和“目标”） ----------
 	if (NO_PUSH) {
 		log('\n[--no-push] 只做本地处理，本次不推送。');
 		return;
 	}
 
+	const targetSig = SLOTS.map(
+		(s) => `${s.tokenKey}=${s.domains.join('|')}`,
+	).join(';');
 	let pushNeeded = false;
 	let pushReason = '';
 	if (!state.lastPush || !state.lastPush.dist) {
 		pushNeeded = true;
 		pushReason = '首次推送（还没有推送记录）';
 	} else {
+		const reasons = [];
+		if (state.lastPush.targets !== targetSig)
+			reasons.push('目标（令牌/域名）有新增或调整');
 		const diffs = BUCKET_KEYS.filter(
 			(k) =>
 				JSON.stringify(state.dist[k] || []) !==
 				JSON.stringify(state.lastPush.dist[k] || []),
 		);
-		if (diffs.length) {
+		if (diffs.length) reasons.push(`分配有变化（${diffs.join('、')}）`);
+		if (reasons.length) {
 			pushNeeded = true;
-			pushReason = `分配有变化（${diffs.join('、')}）`;
+			pushReason = reasons.join('；');
 		} else {
 			pushReason = '分配与上次推送完全一致（无新增/移除/恢复）';
 		}
@@ -1038,6 +1059,7 @@ async function main() {
 	state.lastPush = {
 		at: localIso(now),
 		dist: JSON.parse(JSON.stringify(state.dist)),
+		targets: targetSig,
 	};
 	saveJson(abs(CONFIG.STATE_FILE), state);
 	log(
