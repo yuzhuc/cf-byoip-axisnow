@@ -44,6 +44,8 @@ jobs:
           LT_B: ${{ secrets.LT_B }}
           DX_A: ${{ secrets.DX_A }}
           DX_B: ${{ secrets.DX_B }}
+          HW_A: ${{ secrets.HW_A }}
+          HW_B: ${{ secrets.HW_B }}
         run: |
           if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
             node cf-byoip-sync.js --dry-run
