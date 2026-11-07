@@ -1144,7 +1144,7 @@
     }
   },
   "lastPush": {
-    "at": "2026-11-01 06:12:01",
+    "at": "2026-11-07 13:29:05",
     "dist": {
       "A1": [
         "5.10.244.28",
@@ -1269,7 +1269,7 @@
         "216.205.52.88"
       ]
     },
-    "targets": "YD_A=2a9ad1aa.alidns-2.com|d1ed77cc.alidns-2.com;YD_B=5ed06881.alidns-2.com|1080ac66.alidns-2.com;LT_A=ea2317f0.alidns-1.com|b5202c8c.alidns-1.com;LT_B=c32df85c.alidns-3.com|e8468091.alidns-3.com;DX_A=38a4381a.alidns-2.com|32fbc382.alidns-2.com;DX_B=b15488b3.alidns-3.com|cedf0ead.alidns-3.com;HW_A=b684ed1b.alidns-3.com|c4523ce7.alidns-3.com;HW_B=0dac963e.alidns-2.com|82b5b9b6.alidns-2.com"
+    "targets": "YD_A=yd-a1.alidns-2.com|yd-a2.alidns-2.com;YD_B=yd-b1.alidns-1.com|yd-b2.alidns-1.com;LT_A=lt-a1.alidns-2.com|lt-a2.alidns-2.com;LT_B=lt-b1.alidns-2.com|lt-b2.alidns-2.com;DX_A=dx-a1.alidns-3.com|dx-a2.alidns-3.com;DX_B=dx-b1.alidns-3.com|dx-b2.alidns-3.com;HW_A=hw-a1.alidns-3.com|hw-a2.alidns-3.com;HW_B=hw-b1.alidns-2.com|hw-b2.alidns-2.com"
   },
   "dist": {
     "A1": [
