@@ -89,44 +89,44 @@ const NETWORKS = [
 		network: '移动',
 		A: {
 			tokenKey: 'YD_A',
-			domains: ['yd-a1.alidns-2.com', 'yd-a2.alidns-2.com'],
+			domains: ['byoip-1a.alidns-2.com', 'byoip-1b.alidns-2.com'],
 		},
 		B: {
 			tokenKey: 'YD_B',
-			domains: ['yd-b1.alidns-1.com', 'yd-b2.alidns-1.com'],
+			domains: ['byoip-2a.alidns-1.com', 'byoip-2b.alidns-1.com'],
 		},
 	},
 	{
 		network: '联通',
 		A: {
 			tokenKey: 'LT_A',
-			domains: ['lt-a1.alidns-2.com', 'lt-a2.alidns-2.com'],
+			domains: ['byoip-3a.alidns-2.com', 'byoip-3b.alidns-2.com'],
 		},
 		B: {
 			tokenKey: 'LT_B',
-			domains: ['lt-b1.alidns-2.com', 'lt-b2.alidns-2.com'],
+			domains: ['byoip-4a.alidns-2.com', 'byoip-4b.alidns-2.com'],
 		},
 	},
 	{
 		network: '电信',
 		A: {
 			tokenKey: 'DX_A',
-			domains: ['dx-a1.alidns-3.com', 'dx-a2.alidns-3.com'],
+			domains: ['byoip-5a.alidns-3.com', 'byoip-5b.alidns-3.com'],
 		},
 		B: {
 			tokenKey: 'DX_B',
-			domains: ['dx-b1.alidns-3.com', 'dx-b2.alidns-3.com'],
+			domains: ['byoip-6a.alidns-3.com', 'byoip-6b.alidns-3.com'],
 		},
 	},
 	{
 		network: '海外',
 		A: {
 			tokenKey: 'HW_A',
-			domains: ['hw-a1.alidns-3.com', 'hw-a2.alidns-3.com'],
+			domains: ['byoip-7a.alidns-3.com', 'byoip-7b.alidns-3.com'],
 		},
 		B: {
 			tokenKey: 'HW_B',
-			domains: ['hw-b1.alidns-2.com', 'hw-b2.alidns-2.com'],
+			domains: ['byoip-8a.alidns-2.com', 'byoip-8b.alidns-2.com'],
 		},
 	},
 ];
