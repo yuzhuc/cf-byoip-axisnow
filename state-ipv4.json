@@ -1141,10 +1141,20 @@
       "missCount": 0,
       "lockedAt": "2026-11-01 06:12:01",
       "updatedAt": "2026-11-01 06:12:01"
+    },
+    "154.218.15": {
+      "prefix": "154.218.15",
+      "ips": [
+        "154.218.15.233"
+      ],
+      "status": "active",
+      "missCount": 0,
+      "lockedAt": "2026-11-07 23:09:23",
+      "updatedAt": "2026-11-07 23:09:23"
     }
   },
   "lastPush": {
-    "at": "2026-11-07 15:06:08",
+    "at": "2026-11-07 23:09:23",
     "dist": {
       "A1": [
         "5.10.244.28",
@@ -1216,6 +1226,7 @@
         "154.198.173.243",
         "154.206.12.5",
         "154.211.8.30",
+        "154.218.15.233",
         "155.46.167.155",
         "155.46.213.159",
         "156.243.246.254",
@@ -1269,7 +1280,7 @@
         "216.205.52.88"
       ]
     },
-    "targets": "YD_A=byoip-1a.alidns-2.com|byoip-1b.alidns-2.com;YD_B=byoip-2a.alidns-1.com|byoip-2b.alidns-1.com;LT_A=byoip-3a.alidns-2.com|byoip-3b.alidns-2.com;LT_B=byoip-4a.alidns-2.com|byoip-4b.alidns-2.com;DX_A=byoip-5a.alidns-3.com|byoip-5b.alidns-3.com;DX_B=byoip-6a.alidns-3.com|byoip-6b.alidns-3.com;HW_A=byoip-7a.alidns-3.com|byoip-7b.alidns-3.com;HW_B=byoip-8a.alidns-2.com|byoip-8b.alidns-2.com"
+    "targets": "YD_A=1a.byoip.032507.xyz|1b.byoip.032507.xyz;YD_B=2a.byoip.032507.xyz|2b.byoip.032507.xyz;LT_A=3a.byoip.032507.xyz|3b.byoip.032507.xyz;LT_B=4a.byoip.032507.xyz|4b.byoip.032507.xyz;DX_A=5a.byoip.032507.xyz|5b.byoip.032507.xyz;DX_B=6a.byoip.032507.xyz|6b.byoip.032507.xyz;HW_A=7a.byoip.032507.xyz|7b.byoip.032507.xyz;HW_B=8a.byoip.032507.xyz|8b.byoip.032507.xyz"
   },
   "dist": {
     "A1": [
@@ -1342,6 +1353,7 @@
       "154.198.173.243",
       "154.206.12.5",
       "154.211.8.30",
+      "154.218.15.233",
       "155.46.167.155",
       "155.46.213.159",
       "156.243.246.254",
