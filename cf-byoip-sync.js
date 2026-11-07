@@ -89,44 +89,44 @@ const NETWORKS = [
 		network: '移动',
 		A: {
 			tokenKey: 'YD_A',
-			domains: ['2a9ad1aa.alidns-2.com', 'd1ed77cc.alidns-2.com'],
+			domains: ['yd-a1.alidns-2.com', 'yd-a2.alidns-2.com'],
 		},
 		B: {
 			tokenKey: 'YD_B',
-			domains: ['5ed06881.alidns-2.com', '1080ac66.alidns-2.com'],
+			domains: ['yd-b1.alidns-1.com', 'yd-b2.alidns-1.com'],
 		},
 	},
 	{
 		network: '联通',
 		A: {
 			tokenKey: 'LT_A',
-			domains: ['ea2317f0.alidns-1.com', 'b5202c8c.alidns-1.com'],
+			domains: ['lt-a1.alidns-2.com', 'lt-a2.alidns-2.com'],
 		},
 		B: {
 			tokenKey: 'LT_B',
-			domains: ['c32df85c.alidns-3.com', 'e8468091.alidns-3.com'],
+			domains: ['lt-b1.alidns-2.com', 'lt-b2.alidns-2.com'],
 		},
 	},
 	{
 		network: '电信',
 		A: {
 			tokenKey: 'DX_A',
-			domains: ['38a4381a.alidns-2.com', '32fbc382.alidns-2.com'],
+			domains: ['dx-a1.alidns-3.com', 'dx-a2.alidns-3.com'],
 		},
 		B: {
 			tokenKey: 'DX_B',
-			domains: ['b15488b3.alidns-3.com', 'cedf0ead.alidns-3.com'],
+			domains: ['dx-b1.alidns-3.com', 'dx-b2.alidns-3.com'],
 		},
 	},
 	{
 		network: '海外',
 		A: {
 			tokenKey: 'HW_A',
-			domains: ['b684ed1b.alidns-3.com', 'c4523ce7.alidns-3.com'],
+			domains: ['hw-a1.alidns-3.com', 'hw-a2.alidns-3.com'],
 		},
 		B: {
 			tokenKey: 'HW_B',
-			domains: ['0dac963e.alidns-2.com', '82b5b9b6.alidns-2.com'],
+			domains: ['hw-b1.alidns-2.com', 'hw-b2.alidns-2.com'],
 		},
 	},
 ];
